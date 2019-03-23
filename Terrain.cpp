@@ -73,6 +73,8 @@ void ATerrain::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	CheckPlayerInBounds();
+
 }
 
 void ATerrain::Subdivide(int32 a, int32 b, int32 c)
@@ -164,4 +166,24 @@ void ATerrain::HandleSubdivision()
 
 
 	}
+}
+
+
+void ATerrain::CheckPlayerInBounds()
+{
+	BoundsLoc = FVector(TerrainMesh->GetComponentLocation().X + 500, TerrainMesh->GetComponentLocation().Y, TerrainMesh->GetComponentLocation().Z);
+	if (PlayerPos.X < TerrainMesh->GetComponentLocation().X + 500&&
+		PlayerPos.X > TerrainMesh->GetComponentLocation().X - 500 &&
+		PlayerPos.Y < TerrainMesh->GetComponentLocation().Y + 500 &&
+		PlayerPos.Y > TerrainMesh->GetComponentLocation().Y - 500 )
+
+	{
+		InBounds = true;
+	}
+	else
+	{
+		InBounds = false;
+	}
+
+	
 }
