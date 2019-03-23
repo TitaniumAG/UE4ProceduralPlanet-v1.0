@@ -12,7 +12,7 @@ class PROJECTQUADTREE_API ATerrain : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 	// Sets default values for this actor's properties
 	ATerrain();
 
@@ -33,6 +33,9 @@ public:
 	// Subdivision count
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		int32 Recursions;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		FVector PlayerPos;
 
 	// Create our procedural mesh component
 	UProceduralMeshComponent * TerrainMesh;
@@ -59,7 +62,16 @@ public:
 	//Rebuild triangle list 
 	void BuildTriangleList();
 
+	//Check within bounds
+	void CheckPlayerInBounds();
 
+	// Within bounds boolean
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		bool InBounds;
+
+	// Within bounds boolean
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		FVector BoundsLoc;
 
 	
 	
