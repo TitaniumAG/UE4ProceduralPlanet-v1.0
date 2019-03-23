@@ -1,0 +1,180 @@
+
+
+//kathadia, 19/03/2019, 22:23
+
+
+
+// for every 1 critchance
+
+if (Crit == True) // if we land a hypercrit
+{
+    HitValue = HitValue * (CritResult * 0.01) + 1 *(CritResult * 0.01)+1
+}
+
+// for every 1 critresist
+if (Crit == True) // if we land a hypercrit
+{
+    HitValue = HitValue / (CritResist * 0.01) + 1 /(CritResist * 0.01)+1 
+}
+
+
+
+
+if (Crit == True) // if we land a supercrit
+{
+    HitValue = HitValue * (CritResult * 0.005) + 1 *(CritResult * 0.005)+1
+}
+
+if (Crit == True) // if we land a supercrit
+{
+    HitValue = HitValue / (CritResist * 0.005) + 1 /(CritResist * 0.005)+1 
+}
+
+
+
+
+if (Crit == True) // if we land a crit
+{
+    HitValue = HitValue * (CritResult * 0.0025) + 1 *(CritResult * 0.0025)+1
+} 
+
+if (Crit == True) // if we land a crit
+{
+    HitValue = HitValue / (CritResist * 0.0025) + 1 /(CritResist * 0.0025)+1 
+}    
+
+
+
+
+#######################################################################################################################################
+
+// for every 1 accuracy
+
+ if (hit == True) // if we land a directhit
+{
+    HitValue = HitValue * (HitResult * 0.01) + 1 *(HitResult * 0.01)+1
+}
+
+// for every 1 evasion
+
+if (hit == True) // if we land a directhit
+{
+    HitValue = HitValue / (HitResist * 0.01) + 1 /(HitResist * 0.01)+1 
+}
+
+
+
+// for every 1 accuracy
+if (hit == True) // if we land a hit
+{
+    HitValue = HitValue * (HitResult * 0.005) + 1 *(HitResult * 0.005)+1
+}
+
+// for every 1 evasion
+if (hit == True) // if we land a hit
+{
+    HitValue = HitValue / (HitResist * 0.005) + 1 /(HitResist * 0.005)+1 
+}
+
+
+
+
+if (hit == True) // if we land a Skim
+{
+    HitValue = HitValue * (HitResult * 0.0025) + 1 *(HitResult * 0.0025)+1
+} 
+
+if (hit == True) // if we land a Skim
+{
+    HitValue = HitValue / (HitResist * 0.0025) + 1 /(HitResist * 0.0025)+1 
+}
+    
+
+
+
+#########################################################################################################################
+
+
+
+// // for every 1 staggerchance
+if (hit == True) // if we land a stagger
+{
+    HitValue = HitValue * (StaggerResult * 0.01) + 1 *(StaggerResult * 0.01)+1
+}
+
+
+// for every 1 staggerresist
+if (hit == True) // if we land a stagger
+{
+    HitValue = HitValue / (StaggerResist * 0.01) + 1 /(StaggerResist * 0.01)+1 
+}
+
+
+
+
+if (hit == True) // if we land a stagger
+{
+    HitValue = HitValue * (StaggerResult * 0.005) + 1 *(StaggerResult * 0.005)+1
+}
+
+if (hit == True) // if we land a stagger
+{
+    HitValue = HitValue / (StaggerResist * 0.005) + 1 /(StaggerResist * 0.005)+1 
+}
+
+
+
+
+if (hit == True) // if we land a stagger
+{
+    HitValue = HitValue * (StaggerResult * 0.0025) + 1 *(StaggerResult * 0.0025)+1
+} 
+
+if (hit == True) // if we land a stagger
+{
+    HitValue = HitValue / (StaggerResist * 0.0025) + 1 /(StaggerResist * 0.0025)+1 
+}
+    
+
+####################################################################################################
+
+
+
+
+// for every 1 knockdownchance
+if (knockdown == True) // if we land a knockdown lv3
+{
+    HitValue = HitValue * (knockdownResult * 0.009) + 1 *(knockdownResult * 0.009)+1
+}
+
+// for every 1 knockdownresist
+if (knockdown == True) // if we land a knockdown lv2
+{
+    HitValue = HitValue * (knockdownResult * 0.008) + 1 *(knockdownResult * 0.008)+1
+}
+
+
+if (knockdown == True) // if we land a knockdown lv1
+{
+    HitValue = HitValue * (knockdownResult * 0.007) + 1 *(knockdownResult * 0.007)+1
+}
+
+
+
+
+
+// Enemy Hit values
+miss = 1000
+skim = 23000
+hit = 1500
+directhit = 500
+
+stagger lv1 = 60 30 for level 2. 20 for lv 3. 12 for lv 4. 6 for lv 5 and 3 for lv 6.
+
+
+
+
+for(int i = 0; i < PlayerEvasion; i++)
+{
+	
+}
