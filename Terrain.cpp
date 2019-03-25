@@ -18,9 +18,14 @@ ATerrain::ATerrain()
 	// Attach the procedural mesh component to the root
 	TerrainMesh->AttachTo(RootComponent);
 
+	// Set the terrain scale value
+	TerrainScale = 500;
+
+	// Set the search index values
 	IndexA = 0;
 	IndexB = 1;
 	IndexC = 2;
+
 
 
 
@@ -33,10 +38,10 @@ void ATerrain::PostActorCreated()
 	Super::PostActorCreated();	
 
 	// Add vertices
-	Vertices.Add(FVector(-500, -500, 0));
-	Vertices.Add(FVector(-500, 500, 0));
-	Vertices.Add(FVector(500, -500, 0));
-	Vertices.Add(FVector(500, 500, 0));
+	Vertices.Add(FVector(-TerrainScale, -TerrainScale, 0));
+	Vertices.Add(FVector(-TerrainScale, TerrainScale, 0));
+	Vertices.Add(FVector(TerrainScale, -TerrainScale, 0));
+	Vertices.Add(FVector(TerrainScale, TerrainScale, 0));
 
 	Triangles.Add(0);
 	Triangles.Add(1);
@@ -46,7 +51,8 @@ void ATerrain::PostActorCreated()
 	Triangles.Add(1);
 	Triangles.Add(3);
 
-	TerrainMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
+	TerrainMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, false);
+	
 }
 
 
@@ -56,9 +62,12 @@ void ATerrain::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChan
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);	
 
-	HandleSubdivision();
+	//HandleSubdivision();
 
-	TerrainMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
+	//TerrainMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
+
+	// Add vertices
+
 
 }
 
@@ -75,6 +84,25 @@ void ATerrain::Tick(float DeltaTime)
 
 	CheckPlayerInBounds();
 
+}
+
+void ATerrain::GenerateMesh()
+{
+	// Add vertices
+	Vertices.Add(FVector(-TerrainScale, -TerrainScale, 0));
+	Vertices.Add(FVector(-TerrainScale, TerrainScale, 0));
+	Vertices.Add(FVector(TerrainScale, -TerrainScale, 0));
+	Vertices.Add(FVector(TerrainScale, TerrainScale, 0));
+
+	Triangles.Add(0);
+	Triangles.Add(1);
+	Triangles.Add(2);
+
+	Triangles.Add(2);
+	Triangles.Add(1);
+	Triangles.Add(3);
+
+	TerrainMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
 }
 
 void ATerrain::Subdivide(int32 a, int32 b, int32 c)
@@ -126,7 +154,10 @@ void ATerrain::BuildTriangleList()
 void ATerrain::HandleSubdivision()
 {
 	// Start from base
-	Vertices = { FVector(-500, -500, 0), FVector(-500, 500, 0), FVector(500, -500, 0), FVector(500, 500, 0) };
+	Vertices = { FVector(-TerrainScale, -TerrainScale, 0), 
+		FVector(-TerrainScale, TerrainScale, 0), 
+		FVector(TerrainScale, -TerrainScale, 0), 
+		FVector(TerrainScale, TerrainScale, 0) };
 
 	Triangles = { 0,1,2,2,1,3 };
 
@@ -164,18 +195,20 @@ void ATerrain::HandleSubdivision()
 		IndexB = 1;
 		IndexC = 2;
 
-
+		
 	}
+
+	TerrainMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
 }
 
 
 void ATerrain::CheckPlayerInBounds()
 {
-	BoundsLoc = FVector(TerrainMesh->GetComponentLocation().X + 500, TerrainMesh->GetComponentLocation().Y, TerrainMesh->GetComponentLocation().Z);
-	if (PlayerPos.X < TerrainMesh->GetComponentLocation().X + 500&&
-		PlayerPos.X > TerrainMesh->GetComponentLocation().X - 500 &&
-		PlayerPos.Y < TerrainMesh->GetComponentLocation().Y + 500 &&
-		PlayerPos.Y > TerrainMesh->GetComponentLocation().Y - 500 )
+	/*
+	if (PlayerPos.X < TerrainMesh->GetComponentLocation().X + TerrainScale&&
+		PlayerPos.X > TerrainMesh->GetComponentLocation().X - TerrainScale &&
+		PlayerPos.Y < TerrainMesh->GetComponentLocation().Y + TerrainScale &&
+		PlayerPos.Y > TerrainMesh->GetComponentLocation().Y - TerrainScale)
 
 	{
 		InBounds = true;
@@ -184,6 +217,15 @@ void ATerrain::CheckPlayerInBounds()
 	{
 		InBounds = false;
 	}
+	*/
 
+	if (FVector(PlayerPos - TerrainMesh->GetComponentLocation()).Size() < DistFromTerrain)
+	{
+		InBounds = true;
+	}
+	else
+	{
+		InBounds = false;
+	}
 	
 }
