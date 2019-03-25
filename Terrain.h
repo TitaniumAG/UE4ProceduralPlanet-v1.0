@@ -12,7 +12,7 @@ class PROJECTQUADTREE_API ATerrain : public AActor
 {
 	GENERATED_BODY()
 	
-public:
+public:	
 	// Sets default values for this actor's properties
 	ATerrain();
 
@@ -37,7 +37,17 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		FVector PlayerPos;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		int32 TerrainSplitCount;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		float TerrainScale;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		float DistFromTerrain;
+
 	// Create our procedural mesh component
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 	UProceduralMeshComponent * TerrainMesh;
 
 	// Variables for the component
@@ -53,13 +63,18 @@ public:
 	TArray<int32> Triangles_New;
 	int32 IndexA, IndexB, IndexC;
 
+	// Function to generate mesh section
+	UFUNCTION(BlueprintCallable, Category = "Defaults")
+	void GenerateMesh();
+
 	// Handle Subdivision count
+	UFUNCTION(BlueprintCallable, Category = "Defaults")
 	void HandleSubdivision();
 
 	//Do the actual subdivision
 	void Subdivide(int32 a, int32 b, int32 c);
 
-	//Rebuild triangle list 
+	//Rebuild triangle list
 	void BuildTriangleList();
 
 	//Check within bounds
@@ -71,7 +86,7 @@ public:
 
 	// Within bounds boolean
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
-		FVector BoundsLoc;
+		float BoundsDist;
 
 	
 	
