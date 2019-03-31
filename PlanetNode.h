@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ProceduralMeshComponent.h"
+#include "Components/BoxComponent.h"
 #include "PlanetNode.generated.h"
 
 UCLASS()
@@ -50,6 +51,10 @@ public:
 	// Create our procedural mesh component
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		UProceduralMeshComponent * PlanetMesh;
+
+	// Node box component
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		UBoxComponent * boxNode1;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		TArray<FVector>TerrainVertices;
