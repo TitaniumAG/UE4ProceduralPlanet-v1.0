@@ -54,7 +54,7 @@ public:
 
 	// Node box component
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
-		UBoxComponent * boxNode1;
+		UBoxComponent * BoxFrame;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		TArray<FVector>TerrainVertices;
