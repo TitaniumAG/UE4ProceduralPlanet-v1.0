@@ -18,8 +18,8 @@ APlanetNode::APlanetNode()
 	PlanetMesh->AttachTo(RootComponent);
 
 	// Box node 1
-	boxNode1 = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxNode1"));
-	boxNode1->AttachTo(RootComponent);
+	BoxFrame = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxNode1"));
+	BoxFrame->AttachTo(RootComponent);
 
 	// Set the terrain scale value
 	PlanetScale = 500;
