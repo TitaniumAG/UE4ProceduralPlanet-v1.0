@@ -12,16 +12,17 @@ UCLASS()
 class PROCEDURALPLANETLOD_API APlanetNode : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APlanetNode();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	
 public:	
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -35,17 +36,31 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		int32 Recursions;
 
-	// Subdivision count
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults" meta = (ExposeOnSpawn = "true"))
+	// Is player within bounderies of this node?
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		bool InBounds;
+
+	// Node Scale
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = "true"))
 		float NodeScale;
+
+	// Must match node scale! 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = "true"))
+		float DefaultNodeScale;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		FVector PlayerPos;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = "true"))
+		FVector PlanetLocation;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		float PlanetScale;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = "true"))
+		float DistFromPlanetNode;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = "true"))
 		float DistFromPlanetVertex;
 
 	// Create our procedural mesh component
@@ -56,14 +71,16 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		UBoxComponent * BoxFrame;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
-		TArray<FVector>TerrainVertices;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = "true"))
+		TArray<FVector>PlanetVertices;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
-		TArray<int32> TerrainTriangles;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = "true"))
+		TArray<int32> PlanetTriangles;
 
 	// Variables for the component
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 	TArray<FVector> Vertices;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 	TArray<int32> Triangles;
 	TArray<FVector> Normals;
 	TArray<FVector2D> UV0;
@@ -90,6 +107,12 @@ public:
 	void BuildTriangleList();
 
 	//Seek internal triangles
-	void SeekInternalTris();
+	UFUNCTION(BlueprintCallable, Category = "Defaults")
+		void SeekInternalTris();
+
+	void CheckPlayerInBounds();
+
+
+	
 
 };
