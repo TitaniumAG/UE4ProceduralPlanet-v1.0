@@ -228,6 +228,7 @@ void APlanetNode::SeekInternalTris()
 
 		// Check whether the average point is within the bounds of this node
 
-		if(avg.X > )
+		if(avg.X > BoxFrame->GetComponentLocation().X - NodeScale &&
+		   avg.X < BoxFrame->GetComponentLocation().X + NodeScale)
 	}
 }
