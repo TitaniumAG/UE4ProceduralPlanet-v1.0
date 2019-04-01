@@ -24,6 +24,9 @@ APlanetNode::APlanetNode()
 	// Set the terrain scale value
 	PlanetScale = 500;
 
+	// Set box extent
+	NodeScale = 500;
+
 	// Set the search index values
 	IndexA = 0;
 	IndexB = 1;
@@ -37,16 +40,16 @@ APlanetNode::APlanetNode()
 }
 
 
-// Called in editor
 void APlanetNode::PostActorCreated()
 {
 	Super::PostActorCreated();
 
-	HandleSubdivision();
+	//BoxFrame->SetBoxExtent(FVector(NodeScale, NodeScale, NodeScale));
 
-	PlanetMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
+	//PlanetMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
+
+	
 }
-
 
 
 //Called when a property is changed
@@ -54,9 +57,13 @@ void APlanetNode::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyC
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	HandleSubdivision();
+	SeekInternalTris();
 
-	PlanetMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
+	//HandleSubdivision();
+
+	//PlanetMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
+
+	BoxFrame->SetBoxExtent(FVector(NodeScale, NodeScale, NodeScale));
 
 
 }
@@ -65,6 +72,8 @@ void APlanetNode::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyC
 void APlanetNode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	BoxFrame->SetBoxExtent(FVector(NodeScale, NodeScale, NodeScale));
 	
 }
 
@@ -72,6 +81,8 @@ void APlanetNode::BeginPlay()
 void APlanetNode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	CheckPlayerInBounds();
 
 }
 
@@ -94,24 +105,6 @@ void APlanetNode::Subdivide(int32 a, int32 b, int32 c)
 	vab = FMath::Lerp(va, vb, 0.5);
 	vbc = FMath::Lerp(vb, vc, 0.5);
 	vca = FMath::Lerp(vc, va, 0.5);
-
-	// Normalise vectors
-	va.Normalize();
-	vb.Normalize();
-	vc.Normalize();
-
-	vab.Normalize();
-	vbc.Normalize();
-	vca.Normalize();
-
-	// Scale vectors back up
-	va = va * PlanetScale / 4;
-	vb = vb * PlanetScale / 4;
-	vc = vc * PlanetScale / 4;
-
-	vab = vab * PlanetScale / 4;
-	vbc = vbc * PlanetScale / 4;
-	vca = vca * PlanetScale / 4;
 
 
 	Vertices_New.Add(va);
@@ -149,31 +142,10 @@ void APlanetNode::BuildTriangleList()
 
 void APlanetNode::HandleSubdivision()
 {
-	// Start from base
-	Vertices = {
-	FVector(-100,	-100,	-100),
-	FVector(-100,	-100,	100),
-	FVector(-100,	100,	-100),
-	FVector(-100,	100,	100),
-	FVector(100,	-100,	-100),
-	FVector(100,	-100,	100),
-	FVector(100,	100,	-100),
-	FVector(100,	100,	100) };
-
-	Triangles = {
-		0	,	2	,	1	,
-		2	,	6	,	3	,
-		6	,	4	,	7	,
-		4	,	0	,	5	,
-		2	,	0	,	6	,
-		7	,	5	,	3	,
-		2	,	3	,	1	,
-		6	,	7	,	3	,
-		4	,	5	,	7	,
-		0	,	1	,	5	,
-		0	,	4	,	6	,
-		5	,	1	,	3 };
-
+	//Reset index counters 
+	IndexA = 0;
+	IndexB = 1;
+	IndexC = 2;
 
 	// Handle the subdivisions
 	for (int i = 0; i < Recursions; i++)
@@ -202,12 +174,6 @@ void APlanetNode::HandleSubdivision()
 		BuildTriangleList();
 
 
-		//Reset index counters 
-		IndexA = 0;
-		IndexB = 1;
-		IndexC = 2;
-
-
 	}
 
 
@@ -220,15 +186,123 @@ void APlanetNode::SeekInternalTris()
 	Ib = 1;
 	Ic = 2;
 
-	for (int i = 0; i < TerrainTriangles.Num() / 3; i++)
+	// The planet Vertices must take the planet location into account
+	for (int i = 0; i < PlanetVertices.Num(); i++)
+	{
+		PlanetVertices[i] = PlanetVertices[i]  + PlanetLocation;
+	}
+
+	for (int i = 0; i < PlanetTriangles.Num() / 3; i++)
 	{
 		// Get average point of current triangle
-		FVector avg;
-		avg = (Vertices[Ia] + Vertices[Ib] + Vertices[Ic]) / 3;
+		FVector avg, ab, bc, ca;
+		avg = (PlanetVertices[PlanetTriangles[Ia]] + PlanetVertices[PlanetTriangles[Ib]] + PlanetVertices[PlanetTriangles[Ic]]) / 3;
 
+		ab = FMath::Lerp(PlanetVertices[PlanetTriangles[Ia]], PlanetVertices[PlanetTriangles[Ib]], 0.5);
+		bc = FMath::Lerp(PlanetVertices[PlanetTriangles[Ib]], PlanetVertices[PlanetTriangles[Ic]], 0.5);
+		ca = FMath::Lerp(PlanetVertices[PlanetTriangles[Ic]], PlanetVertices[PlanetTriangles[Ia]], 0.5);
+		
 		// Check whether the average point is within the bounds of this node
-
+		
 		if(avg.X > BoxFrame->GetComponentLocation().X - NodeScale &&
-		   avg.X < BoxFrame->GetComponentLocation().X + NodeScale)
+			avg.X < BoxFrame->GetComponentLocation().X + NodeScale &&
+			
+			avg.Y > BoxFrame->GetComponentLocation().Y - NodeScale &&
+			avg.Y < BoxFrame->GetComponentLocation().Y + NodeScale && 
+			
+			avg.Z > BoxFrame->GetComponentLocation().Z - NodeScale &&
+			avg.Z < BoxFrame->GetComponentLocation().Z + NodeScale ||
+
+
+			// Edges a
+			ab.X > BoxFrame->GetComponentLocation().X - NodeScale &&
+			ab.X < BoxFrame->GetComponentLocation().X + NodeScale &&
+
+			ab.Y > BoxFrame->GetComponentLocation().Y - NodeScale &&
+			ab.Y < BoxFrame->GetComponentLocation().Y + NodeScale &&
+
+			ab.Z > BoxFrame->GetComponentLocation().Z - NodeScale &&
+			ab.Z < BoxFrame->GetComponentLocation().Z + NodeScale ||
+
+
+			// Edges b
+			bc.X > BoxFrame->GetComponentLocation().X - NodeScale &&
+			bc.X < BoxFrame->GetComponentLocation().X + NodeScale &&
+
+			bc.Y > BoxFrame->GetComponentLocation().Y - NodeScale &&
+			bc.Y < BoxFrame->GetComponentLocation().Y + NodeScale &&
+
+			bc.Z > BoxFrame->GetComponentLocation().Z - NodeScale &&
+			bc.Z < BoxFrame->GetComponentLocation().Z + NodeScale ||
+
+			// Edges c
+			ca.X > BoxFrame->GetComponentLocation().X - NodeScale &&
+			ca.X < BoxFrame->GetComponentLocation().X + NodeScale &&
+
+			ca.Y > BoxFrame->GetComponentLocation().Y - NodeScale &&
+			ca.Y < BoxFrame->GetComponentLocation().Y + NodeScale &&
+
+			ca.Z > BoxFrame->GetComponentLocation().Z - NodeScale &&
+			ca.Z < BoxFrame->GetComponentLocation().Z + NodeScale)
+
+			{
+			Vertices.Add(PlanetVertices[PlanetTriangles[Ia]]);
+			Vertices.Add(PlanetVertices[PlanetTriangles[Ib]]);
+			Vertices.Add(PlanetVertices[PlanetTriangles[Ic]]);
+			}
+		
+		// Step to the next face/triangle
+		Ia = Ia + 3;
+		Ib = Ib + 3;
+		Ic = Ic + 3;
+		
 	}
+	
+	// Clear planet triangles
+	PlanetTriangles.Empty();
+
+	// Build Triangle list when done... 
+	for (int i = 0; i < Vertices.Num(); i++)
+	{
+		PlanetTriangles.Add(i);
+		Triangles.Add(i);
+	}
+
+	// Lets generate the geometry for this region...
+	PlanetMesh->SetWorldLocation(PlanetLocation);
+	//HandleSubdivision();
+	PlanetMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
+
+
 }
+
+
+
+void APlanetNode::CheckPlayerInBounds()
+{
+	/*
+	if (PlayerPos.X < TerrainMesh->GetComponentLocation().X + TerrainScale&&
+	PlayerPos.X > TerrainMesh->GetComponentLocation().X - TerrainScale &&
+	PlayerPos.Y < TerrainMesh->GetComponentLocation().Y + TerrainScale &&
+	PlayerPos.Y > TerrainMesh->GetComponentLocation().Y - TerrainScale)
+
+	{
+	InBounds = true;
+	}
+	else
+	{
+	InBounds = false;
+	}
+	*/
+
+	if (FVector(PlayerPos - BoxFrame->GetComponentLocation()).Size() < DistFromPlanetNode)
+	{
+		InBounds = true;
+	}
+	else
+	{
+		InBounds = false;
+	}
+
+}
+
