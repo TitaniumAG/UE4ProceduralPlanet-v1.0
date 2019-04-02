@@ -8,11 +8,11 @@
 #include "Terrain.generated.h"
 
 UCLASS()
-class PROJECTQUADTREE_API ATerrain : public AActor
+class PROCEDURALPLANETLOD_API ATerrain : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ATerrain();
 
@@ -20,7 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -44,11 +44,25 @@ public:
 		float TerrainScale;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		FVector TerrainLocation;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		float DistFromTerrain;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		float DistFromPoint;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		float NoiseScale;
+
+	// Displacement points
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		TArray<FVector> DisplacePoints;
 
 	// Create our procedural mesh component
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
-	UProceduralMeshComponent * TerrainMesh;
+		UProceduralMeshComponent * TerrainMesh;
+
 
 	// Variables for the component
 	TArray<FVector> Vertices;
@@ -65,11 +79,11 @@ public:
 
 	// Function to generate mesh section
 	UFUNCTION(BlueprintCallable, Category = "Defaults")
-	void GenerateMesh();
+		void GenerateMesh();
 
 	// Handle Subdivision count
 	UFUNCTION(BlueprintCallable, Category = "Defaults")
-	void HandleSubdivision();
+		void HandleSubdivision();
 
 	//Do the actual subdivision
 	void Subdivide(int32 a, int32 b, int32 c);
@@ -88,6 +102,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		float BoundsDist;
 
-	
-	
+
+
 };
