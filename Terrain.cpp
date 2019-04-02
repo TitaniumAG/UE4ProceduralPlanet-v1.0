@@ -6,7 +6,7 @@
 // Sets default values
 ATerrain::ATerrain()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Add root component
@@ -35,7 +35,7 @@ ATerrain::ATerrain()
 // Called in editor
 void ATerrain::PostActorCreated()
 {
-	Super::PostActorCreated();	
+	Super::PostActorCreated();
 
 	// Add vertices
 	Vertices.Add(FVector(-TerrainScale, -TerrainScale, 0));
@@ -52,7 +52,7 @@ void ATerrain::PostActorCreated()
 	Triangles.Add(3);
 
 	TerrainMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, false);
-	
+
 }
 
 
@@ -60,9 +60,9 @@ void ATerrain::PostActorCreated()
 //Called when a property is changed
 void ATerrain::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {
-	Super::PostEditChangeProperty(PropertyChangedEvent);	
+	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	//HandleSubdivision();
+	HandleSubdivision();
 
 	//TerrainMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
 
@@ -74,7 +74,7 @@ void ATerrain::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChan
 // Called when the game starts or when spawned
 void ATerrain::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 }
 
 // Called every frame
@@ -117,6 +117,40 @@ void ATerrain::Subdivide(int32 a, int32 b, int32 c)
 	vab = FMath::Lerp(va, vb, 0.5);
 	vbc = FMath::Lerp(vb, vc, 0.5);
 	vca = FMath::Lerp(vc, va, 0.5);
+	
+	for (int i = 0; i < DisplacePoints.Num(); i++)
+	{
+		if (FVector(va + GetActorLocation() - DisplacePoints[i]).Size() < DistFromPoint)
+		{
+			va = va + FVector(0,0,NoiseScale);
+		}
+		if (FVector(vb + GetActorLocation() - DisplacePoints[i]).Size() < DistFromPoint)
+		{
+			vb = vb + FVector(0, 0, NoiseScale);
+		}
+		if (FVector(vc + GetActorLocation() - DisplacePoints[i]).Size() < DistFromPoint)
+		{
+			vc = vc + FVector(0, 0, NoiseScale);
+		}
+
+		if (FVector(vab + GetActorLocation() - DisplacePoints[i]).Size() < DistFromPoint)
+		{
+			vab = vab + FVector(0, 0, NoiseScale);
+		}
+		if (FVector(vbc + GetActorLocation() - DisplacePoints[i]).Size() < DistFromPoint)
+		{
+			vbc = vbc + FVector(0, 0, NoiseScale);
+		}
+		if (FVector(vca + GetActorLocation() - DisplacePoints[i]).Size() < DistFromPoint)
+		{
+			vca = vca + FVector(0, 0, NoiseScale);
+		}
+	}
+
+	//Push up midpoints
+	vab = vab + FVector(0,0,TerrainScale/100000);
+	vbc = vbc + FVector(0, 0, TerrainScale / 100000);
+	vca = vca + FVector(0, 0, TerrainScale / 100000);
 
 	Vertices_New.Add(va);
 	Vertices_New.Add(vab);
@@ -153,10 +187,15 @@ void ATerrain::BuildTriangleList()
 
 void ATerrain::HandleSubdivision()
 {
+	// Keep subdivisions at a safe level! 
+	if (Recursions > 5)
+	{
+		Recursions = 5;
+	}
 	// Start from base
-	Vertices = { FVector(-TerrainScale, -TerrainScale, 0), 
-		FVector(-TerrainScale, TerrainScale, 0), 
-		FVector(TerrainScale, -TerrainScale, 0), 
+	Vertices = { FVector(-TerrainScale, -TerrainScale, 0),
+		FVector(-TerrainScale, TerrainScale, 0),
+		FVector(TerrainScale, -TerrainScale, 0),
 		FVector(TerrainScale, TerrainScale, 0) };
 
 	Triangles = { 0,1,2,2,1,3 };
@@ -175,12 +214,12 @@ void ATerrain::HandleSubdivision()
 		// Empty
 		Vertices.Empty();
 		Triangles.Empty();
-		
+
 
 
 		//Assign new to current
 		Vertices = Vertices_New;
-		
+
 
 		//New empty 
 		Vertices_New.Empty();
@@ -195,7 +234,7 @@ void ATerrain::HandleSubdivision()
 		IndexB = 1;
 		IndexC = 2;
 
-		
+
 	}
 
 	TerrainMesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
@@ -209,7 +248,6 @@ void ATerrain::CheckPlayerInBounds()
 		PlayerPos.X > TerrainMesh->GetComponentLocation().X - TerrainScale &&
 		PlayerPos.Y < TerrainMesh->GetComponentLocation().Y + TerrainScale &&
 		PlayerPos.Y > TerrainMesh->GetComponentLocation().Y - TerrainScale)
-
 	{
 		InBounds = true;
 	}
@@ -227,5 +265,5 @@ void ATerrain::CheckPlayerInBounds()
 	{
 		InBounds = false;
 	}
-	
+
 }
