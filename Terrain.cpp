@@ -117,12 +117,12 @@ void ATerrain::Subdivide(int32 a, int32 b, int32 c)
 	vab = FMath::Lerp(va, vb, 0.5);
 	vbc = FMath::Lerp(vb, vc, 0.5);
 	vca = FMath::Lerp(vc, va, 0.5);
-	
+	/*
 	for (int i = 0; i < DisplacePoints.Num(); i++)
 	{
 		if (FVector(va + GetActorLocation() - DisplacePoints[i]).Size() < DistFromPoint)
 		{
-			va = va + FVector(0,0,NoiseScale);
+			va = va + FVector(0, 0, NoiseScale);
 		}
 		if (FVector(vb + GetActorLocation() - DisplacePoints[i]).Size() < DistFromPoint)
 		{
@@ -146,11 +146,7 @@ void ATerrain::Subdivide(int32 a, int32 b, int32 c)
 			vca = vca + FVector(0, 0, NoiseScale);
 		}
 	}
-
-	//Push up midpoints
-	vab = vab + FVector(0,0,TerrainScale/100000);
-	vbc = vbc + FVector(0, 0, TerrainScale / 100000);
-	vca = vca + FVector(0, 0, TerrainScale / 100000);
+	*/
 
 	Vertices_New.Add(va);
 	Vertices_New.Add(vab);
