@@ -9,11 +9,11 @@
 #include "TerrainNode.generated.h"
 
 UCLASS()
-class PROJECTQUADTREE_API ATerrainNode : public AActor
+class PROCEDURALPLANETLOD_API ATerrainNode : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ATerrainNode();
 
@@ -21,7 +21,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -38,7 +38,7 @@ public:
 	// Create our procedural mesh component
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		UProceduralMeshComponent * TerrainMesh;
-	
+
 	// The player's current position
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		FVector PlayerPos;
@@ -47,33 +47,37 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		bool InBounds;
 
+	// Amount of times to subdivide
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = true))
+		int32 Recursions;
+
 	// The player's distance from this terrain node
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = true))
 		float DistFromNode;
 
 
 	// The size of this terrain node
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = true))
 		float TerrainNodeScale;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		float TerrainNodeScaleZ;
 
 	// Variables from the TerrainClass
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
-	TArray<FVector> TerrainVertices;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
-	TArray<int32> TerrainTriangles;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = true))
+		TArray<FVector> TerrainVertices;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = true))
+		TArray<int32> TerrainTriangles;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = true))
 		FVector TerrainLocation;
 
 
 	// Variables for the terrain node mesh component
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
-	TArray<FVector> Vertices;
+		TArray<FVector> Vertices;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
-	TArray<int32> Triangles;
+		TArray<int32> Triangles;
 	TArray<FVector> Normals;
 	TArray<FVector2D> UV0;
 	TArray<FLinearColor> VertexColors;
@@ -94,6 +98,17 @@ public:
 
 	//Check within bounds
 	void CheckPlayerInBounds();
-	
-	
+
+
+	// Handle Subdivision count
+	UFUNCTION(BlueprintCallable, Category = "Defaults")
+		void HandleSubdivision();
+
+	//Rebuild triangle list
+	void BuildTriangleList();
+
+	//Do the actual subdivision
+	void Subdivide(int32 a, int32 b, int32 c);
+
+
 };
