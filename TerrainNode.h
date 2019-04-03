@@ -111,4 +111,14 @@ public:
 	void Subdivide(int32 a, int32 b, int32 c);
 
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		float NoiseScale;
+
+	// Displacement points
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults", meta = (ExposeOnSpawn = true))
+		TArray<FVector> DisplacePoints;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		float DistFromNoisePoint;
+
 };
