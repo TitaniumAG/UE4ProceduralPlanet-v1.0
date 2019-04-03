@@ -65,7 +65,9 @@ public:
 
 
 	// Variables for the component
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 	TArray<FVector> Vertices;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 	TArray<int32> Triangles;
 	TArray<FVector> Normals;
 	TArray<FVector2D> UV0;
@@ -101,6 +103,10 @@ public:
 	// Within bounds boolean
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
 		float BoundsDist;
+
+	// Our normalize origin
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defaults")
+		FVector NormalizeOrigin;
 
 
 
