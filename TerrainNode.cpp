@@ -157,6 +157,35 @@ void ATerrainNode::Subdivide(int32 a, int32 b, int32 c)
 	vab = FMath::Lerp(va, vb, 0.5);
 	vbc = FMath::Lerp(vb, vc, 0.5);
 	vca = FMath::Lerp(vc, va, 0.5);
+
+	//Displace vertices if there are any displacement vectors present
+	for (int i = 0; i < DisplacePoints.Num(); i++)
+	{
+		if (FVector(va - DisplacePoints[i]).Size() < DistFromNoisePoint)
+		{
+			va = va + FVector(0, 0, NoiseScale);
+		}
+		if (FVector(vb - DisplacePoints[i]).Size() < DistFromNoisePoint)
+		{
+			vb = vb + FVector(0, 0, NoiseScale);
+		}
+		if (FVector(vc - DisplacePoints[i]).Size() < DistFromNoisePoint)
+		{
+			vc = vc + FVector(0, 0, NoiseScale);
+		}
+		if (FVector(vab - DisplacePoints[i]).Size() < DistFromNoisePoint)
+		{
+			vab = vab + FVector(0, 0, NoiseScale);
+		}
+		if (FVector(vbc - DisplacePoints[i]).Size() < DistFromNoisePoint)
+		{
+			vbc = vbc + FVector(0, 0, NoiseScale);
+		}
+		if (FVector(vca - DisplacePoints[i]).Size() < DistFromNoisePoint)
+		{
+			vca = vca + FVector(0, 0, NoiseScale);
+		}
+	}
 	
 
 	Vertices_New.Add(va);
